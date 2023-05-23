@@ -1,0 +1,43 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+	"test_study/consumer"
+	"test_study/producer"
+)
+
+func barHandler(w http.ResponseWriter, r *http.Request) {
+	values := r.URL.Query()
+	name := values.Get("name")
+	if name == "" {
+		name = "안녕하세요"
+	}
+	id, _ := strconv.Atoi(values.Get("id"))
+	fmt.Fprintf(w, "여러분 %s id:%d", name, id)
+}
+
+func main() {
+	//http://localhost:3000/?id=1&name=%22test%22
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Hello It'me ")
+	})
+	mux.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "안녕 나야!")
+	})
+
+	consumer.Consumer()
+	producer.Producer()
+	fmt.Println("메인 패키지")
+
+	http.ListenAndServe(":3000", mux)
+
+	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	fmt.Fprint(w, "test code")
+	// })
+
+	// http.ListenAndServe(":3000", nil)
+}
