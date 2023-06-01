@@ -8,7 +8,7 @@ import (
 func requestHandler(c net.Conn) {
 	// 슬라이스 길이를 들어오는 입력의 크기 만큼 생성할 수 있는 방법이 없을까?
 	// 찾아보고는 있지만 아직까지 ...
-	data := make([]byte, 5)
+	data := make([]byte, 100)
 
 	for {
 		n, err := c.Read(data) // 클라이언트에서 받은 데이터를 읽음
@@ -16,19 +16,39 @@ func requestHandler(c net.Conn) {
 			fmt.Println(err)
 			return
 		}
+		datas := (string(data[:n]))
+		endpoint := "END"
 
-		fmt.Println(data, n) // 데이터 출력
+		if endpoint == datas {
+			fmt.Println("test")
 
-		_, err = c.Write(data) // 클라이언트로 데이터를 보냄
+			break
+		}
+
+		fmt.Println(string(data[:n])) // 데이터 출력
+
+		_, err = c.Write(data[:n]) // 클라이언트로 데이터를 보냄
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 	}
+
+	for {
+		n, err := c.Read(data)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		fmt.Println(data[:n])
+		
+	}
+
 }
 
 func main() {
-	ln, err := net.Listen("tcp", ":8000") // TCP 프로토콜에 8000 포트로 연결을 받음
+	ln, err := net.Listen("tcp", ":2023") // TCP 프로토콜에 2023 포트로 연결을 받음
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -98,6 +98,7 @@ func helloAccountHandler(c *gin.Context) {
 
 func checkData(n, k int) (string, string) {
 
+
 	// 테이블을 각각 따로 생성
 	car := map[int]string{
 		2: "소형차",
